@@ -1,5 +1,12 @@
-import $ from "jquery";
+import $ from 'jquery';
 
-$( "body" ).append( "<p>Holberton Dashboard</p>" );
-$( "body" ).append( "<p>Dashboard data for the students</p>" );
-$( "body" ).append( "<p>Copyright - Holberton School</p>" );
+$('body').append($('<p>').text('Holberton Dashboard'));
+
+$('body').append(
+  $('<p>')
+    .append('Dashboard ')
+    .append($('<b>').text('data for'))
+    .append(' the students')
+);
+
+$('body').append($('<p>').text('Copyright - Holberton School'));
