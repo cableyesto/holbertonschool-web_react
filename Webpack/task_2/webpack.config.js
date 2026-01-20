@@ -15,19 +15,22 @@ module.exports = {
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
+        type: 'javascript/auto', // disable default asset manager
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[ext]',  // preserve original name
-              outputPath: 'assets/', // emitted to public/assets
-              publicPath: 'assets/', // CSS URL points to public/assets
+              name: '[name].[ext]',
+              outputPath: 'assets/',
+              publicPath: 'assets/',
+              esModule: false,
             },
           },
           {
             loader: 'image-webpack-loader',
             options: {
-              disable: true, // webpack@2.x and newer
+              // disable: true, // webpack@2.x and newer
+              disable: false,
               mozjpeg: {
                 progressive: true,
               },
