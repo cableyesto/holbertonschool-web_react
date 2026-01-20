@@ -1,0 +1,30 @@
+{
+  "name": "task_3",
+  "version": "0.0.1",
+  "description": "Dev servers, modules, and tree shaking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development",
+    "build": "webpack",
+    "serve": "webpack serve --host 127.0.0.1 --port 8082",
+    "start-dev": "webpack serve"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.11.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.6.6",
+    "image-webpack-loader": "^8.1.0",
+    "style-loader": "^3.3.4",
+    "webpack": "^5.104.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.2"
+  },
+  "dependencies": {
+    "jquery": "^3.7.1",
+    "lodash": "^4.17.21"
+  }
+}
