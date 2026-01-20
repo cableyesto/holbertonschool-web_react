@@ -16,7 +16,14 @@ module.exports = {
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
         use: [
-          'file-loader',
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',  // preserve original name
+              outputPath: 'assets/', // emitted to public/assets
+              publicPath: 'assets/', // CSS URL points to public/assets
+            },
+          },
           {
             loader: 'image-webpack-loader',
             options: {
