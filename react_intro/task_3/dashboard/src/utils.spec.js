@@ -1,5 +1,5 @@
 import {expect, test} from '@jest/globals'
-import * as utils from './utils.js';
+import * as utils from './utils.js'
 
 test('should return current year', () => {
   const date = new Date()
