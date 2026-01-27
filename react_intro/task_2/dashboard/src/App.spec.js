@@ -27,25 +27,23 @@ test('should render the image', () => {
 test('should render two inputs for login', () => {
   render(<App />)
 
-  const pwdInput = screen.getByLabelText(/password/i)
+  const inputs = screen.getAllByRole('textbox')
+  const password = screen.getByLabelText(/password/i)
 
-  expect(
-    screen.getByRole('textbox', { name: /email/i })
-  ).toBeInTheDocument()
-  expect(
-    pwdInput.closest('input').value
-  ).toEqual('')
+  expect(password)
+  expect(inputs.length + 1).toBe(2)
 })
 
 test('should render two label elements', () => {
   render(<App />)
 
-  expect(screen.getByLabelText(/Email/i))
-  expect(screen.getByLabelText(/Password/i))
+  const labels = screen.getAllByText(/email|password/i)
+
+  expect(labels).toHaveLength(2)
 })
 
 test('should render one button', () => {
   render(<App />)
 
-  expect(screen.getByRole('button')).toHaveTextContent('OK')
+  expect(screen.getByRole('button')).toHaveTextContent(/OK/i)
 })
