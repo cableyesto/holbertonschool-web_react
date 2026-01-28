@@ -13,5 +13,5 @@ button img {
 }
 
 [data-priority="urgent"] {
-  color: #e1003c;
+  color: red;
 }
