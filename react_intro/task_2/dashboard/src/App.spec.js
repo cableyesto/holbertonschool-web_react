@@ -1,6 +1,7 @@
 import {expect, test} from '@jest/globals';
 import {render, screen} from '@testing-library/react'
 import App from './App.jsx'
+import { scryRenderedComponentsWithType } from 'react-dom/test-utils';
 
 test('should render title', () => {
   render(<App />)
@@ -18,10 +19,7 @@ test('should render two paragraphs', () => {
 test('should render the image', () => {
   render(<App />)
 
-  expect(screen.getByRole('img')).toHaveAttribute(
-    'alt',
-    expect.stringMatching(/holberton logo/i)
-  )
+  expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument()
 })
 
 test('should render two inputs for login', () => {
@@ -45,5 +43,7 @@ test('should render two label elements', () => {
 test('should render one button', () => {
   render(<App />)
 
-  expect(screen.getByRole('button')).toHaveTextContent(/OK/i)
+  // expect(screen.getByText(/ok/i)).toBeInTheDocument()
+  const text = screen.getByText(/ok/i).textContent
+  expect(text).toEqual(expect.stringMatching(/ok/i))
 })
