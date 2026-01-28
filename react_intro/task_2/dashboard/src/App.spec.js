@@ -1,7 +1,6 @@
 import {expect, test} from '@jest/globals';
 import {render, screen} from '@testing-library/react'
 import App from './App.jsx'
-import { scryRenderedComponentsWithType } from 'react-dom/test-utils';
 
 test('should render title', () => {
   render(<App />)
@@ -22,22 +21,25 @@ test('should render the image', () => {
   expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument()
 })
 
+// Task 4 verifications
 test('should render two inputs for login', () => {
-  render(<App />)
+  const { container } = render(<App />)
 
-  const inputs = screen.getAllByRole('textbox')
-  const password = screen.getByLabelText(/password/i)
+  const emailInput = container.querySelector('input[type="email"]')
+  const passwordInput = container.querySelector('input[type="password"]')
 
-  expect(password)
-  expect(inputs.length + 1).toBe(2)
+  expect(emailInput).toBeInTheDocument()
+  expect(passwordInput).toBeInTheDocument()
 })
 
 test('should render two label elements', () => {
   render(<App />)
 
-  const labels = screen.getAllByText(/email|password/i)
+  const emailLabel = screen.getByText(/email/i)
+  const passwordLabel = screen.getByText(/password/i)
 
-  expect(labels).toHaveLength(2)
+  expect(emailLabel).toBeInTheDocument()
+  expect(passwordLabel).toBeInTheDocument()
 })
 
 test('should render one button', () => {
