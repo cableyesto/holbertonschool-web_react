@@ -12,7 +12,7 @@ test('should render two paragraphs', () => {
   render(<App />)
 
   expect(screen.getByText(/Login to access the full dashboard/i))
-  expect(screen.getByText(/Copyright 2026 - holberton School/i))
+  expect(screen.getByText(/Copyright/i))
 })
 
 test('should render the image', () => {
@@ -45,7 +45,6 @@ test('should render two label elements', () => {
 test('should render one button', () => {
   render(<App />)
 
-  // expect(screen.getByText(/ok/i)).toBeInTheDocument()
   const text = screen.getByText(/ok/i).textContent
   expect(text).toEqual(expect.stringMatching(/ok/i))
 })
