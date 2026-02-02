@@ -1,38 +1,5 @@
-/*
-function NotificationItem({ type='default', html='', value='' }) {
-  if (value && !html) {
-    return (
-      <>
-        <li
-          data-notification-type={type}
-          style={{
-            color: type === 'default' ? 'blue' : 'red'
-          }}
-        >
-          {value}
-        </li>
-      </>
-    )
-  }
-  if (html && !value) {
-    return (
-      <>
-        <li
-          data-notification-type={type}
-          dangerouslySetInnerHTML={typeof html === 'object' ? html : { __html: html }}
-          style={{
-            color: type === 'default' ? 'blue' : 'red'
-          }}
-        >
-        </li>
-      </>
-    )
-  }
-}
-*/
-
-function NotificationItem({ type = 'default', value = '', html = '' }) {
-  const hasHTML = html && (typeof html === 'object' || html.length > 0);
+function NotificationItem({ type = 'default', value = '', html = null }) {
+  const hasHTML = html && (typeof html === 'object' || typeof html === 'string');
 
   return (
     <li
@@ -45,4 +12,4 @@ function NotificationItem({ type = 'default', value = '', html = '' }) {
   );
 }
 
-export default NotificationItem
+export default NotificationItem;
