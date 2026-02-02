@@ -18,7 +18,7 @@ function NotificationItem({ type='default', html='', value='' }) {
       <>
         <li
           data-notification-type={type}
-          dangerouslySetInnerHTML={html}
+          dangerouslySetInnerHTML={typeof html === 'object' ? html : { __html: html }}
           style={{
             color: type === 'default' ? 'blue' : 'red'
           }}
