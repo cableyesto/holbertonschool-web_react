@@ -1,4 +1,4 @@
-function NotificationsItem({ type='default', html='', value='' }) {
+function NotificationItem({ type='default', html='', value='' }) {
   if (value && !html) {
     return (
       <>
@@ -29,4 +29,4 @@ function NotificationsItem({ type='default', html='', value='' }) {
   }
 }
 
-export default NotificationsItem
+export default NotificationItem

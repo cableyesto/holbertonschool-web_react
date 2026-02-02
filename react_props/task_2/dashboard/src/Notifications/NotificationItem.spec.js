@@ -1,9 +1,9 @@
 import {render, screen} from '@testing-library/react'
-import NotificationsItem from './NotificationsItem.jsx'
+import NotificationItem from './NotificationItem.jsx'
 
-test('should render default NotificationsItem in blue', () => {
+test('should render default NotificationItem in blue', () => {
   render(
-    <NotificationsItem
+    <NotificationItem
       type='default'
       value='Bob'
       html=''
@@ -16,9 +16,9 @@ test('should render default NotificationsItem in blue', () => {
   expect(liElement.style.getPropertyValue('color')).toBe('blue')
 })
 
-test('should render urgent NotificationsItem in red', () => {
+test('should render urgent NotificationItem in red', () => {
   render(
-    <NotificationsItem
+    <NotificationItem
       type='urgent'
       value='Bob'
       html=''

@@ -1,6 +1,6 @@
 import closeButton from '../assets/close-button.png'
 import './Notifications.css'
-import NotificationsItem from './NotificationsItem.jsx'
+import NotificationItem from './NotificationItem.jsx'
 
 function Notifications({ notifications=[] }) {
   return (
@@ -10,7 +10,7 @@ function Notifications({ notifications=[] }) {
         <ul>
           {
             notifications.map(notification => {
-              return <NotificationsItem 
+              return <NotificationItem 
                 key={notification.id}
                 type={notification.type}
                 value={notification.value}
