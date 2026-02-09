@@ -26,7 +26,6 @@ afterEach(() => {
 test('should called the prop function on click event', async () => {
   const mockProp = jest.fn()
 
-  // render(<NotificationItem type="urgent" value="New resume available" markAdRead={() => {mockProp}} />);
   render(<NotificationItem type="urgent" value="New resume available" markAsRead={mockProp} />);
 
   const item = screen.getByRole('listitem');
