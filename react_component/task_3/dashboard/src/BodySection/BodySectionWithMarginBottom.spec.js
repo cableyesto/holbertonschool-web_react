@@ -1,8 +1,8 @@
 import {render, screen} from '@testing-library/react'
-import BodySectionWithMargin from './BodySectionWithMarginBottom.jsx'
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.jsx'
 
 test('should render correctly the title as h2', () => {
-  render(<BodySectionWithMargin />)
+  render(<BodySectionWithMarginBottom />)
 
   const title = screen.getByRole('heading', {level: 2})
   const componentDiv = title.closest('.bodySectionWithMargin')
@@ -11,8 +11,8 @@ test('should render correctly the title as h2', () => {
   expect(componentDiv).toBeInTheDocument()
 })
 
-test('should render BodySection component ', () => {
-  render(<BodySectionWithMargin />)
+test('should render BodySection component', () => {
+  render(<BodySectionWithMarginBottom />)
 
   const title = screen.getByRole('heading', {level: 2})
   const componentDiv = title.closest('.bodySection')

@@ -6,6 +6,7 @@ test('should render correctly the title as h2', () => {
 
   const title = screen.getByRole('heading', {level: 2})
   expect(title).toBeInTheDocument()
+  expect(title).toHaveTextContent('This is the title')
 })
 
 test('should render two children passed to the component', () => {
