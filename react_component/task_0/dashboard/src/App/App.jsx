@@ -17,7 +17,7 @@ class App extends Component {
   };
 
   render() {
-  const markup = { __html: getLatestNotification() };
+    const markup = { __html: getLatestNotification() };
     const notificationsList = [{
       id: 1,
       type: 'default',
@@ -44,7 +44,6 @@ class App extends Component {
         </div>
         <Header />
         <div className='main-body'>
-          {/* {isLoggedIn ?  */}
           {this.props.isLoggedIn ? 
             <CourseList courses={coursesList}/>
             :
