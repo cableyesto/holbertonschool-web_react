@@ -1,12 +1,14 @@
-// import {expect, test} from '@jest/globals';
+// import {expect, test} from '@jest/globals'
 import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event'
 import App from './App.jsx'
 
 test('should render title', () => {
   render(<App />)
 
-  expect(screen.getByRole('heading')).toHaveTextContent(/School dashboard/i)
+  const title = screen.getByRole('heading', {level: 1})
+  expect(title).toBeInTheDocument()
+  expect(title).toHaveTextContent(/School dashboard/i)
 })
 
 test('should render two paragraphs', () => {
@@ -90,4 +92,16 @@ test('should called the alert function with correct text', async () => {
   expect(alertSpy).toHaveBeenCalledWith(
     expect.stringMatching(/Logging you out/i)
   )
+})
+
+test('should display by default body content', () => {
+  render(<App />)
+
+  const paragraph = screen.getByText(/Holberton School News goes here/i)
+  const title = screen.getByText(/News from the School/i)
+
+  expect(paragraph).toBeInTheDocument()
+  expect(paragraph).toHaveRole('paragraph')
+  expect(title).toBeInTheDocument()
+  expect(title).toHaveRole('heading')
 })
