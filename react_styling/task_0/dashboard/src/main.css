@@ -1,5 +1,5 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-display: 'Roboto font family'
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
 }
