@@ -1,6 +1,5 @@
 import WithLogging from '../HOC/WithLogging.jsx'
 import CourseListRow from './CourseListRow.jsx'
-import './CourseList.css'
 
 function CourseList({ courses = [] }) {
   return (
