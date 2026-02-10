@@ -1,5 +1,4 @@
 import { PureComponent } from 'react'
-// import { Component } from 'react'
 
 class NotificationItem extends PureComponent {
   constructor(props) {

@@ -17,6 +17,13 @@ class Notifications extends Component {
     console.log(`Notification ${id} has been marked as read`)
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.notifications.length !== nextProps.notifications.length) {
+      return true
+    }
+    return false
+  }
+
   render() {
     return (
       <>

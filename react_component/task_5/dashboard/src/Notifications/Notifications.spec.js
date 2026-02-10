@@ -140,3 +140,73 @@ test('should display correct log message when notification is clicked', async ()
     expect.stringMatching(/Notification 2 has been marked as read/i)
   )
 })
+
+test('should not re-render when length of notification is the same', () => {
+  let notificationsList = [{
+    id: 1,
+    type: 'default',
+    value: 'New training available'
+  }, {
+    id: 2,
+    type: 'urgent',
+    value: 'New course available'
+  }]
+
+  const { rerender } = render(
+    <Notifications notifications={notificationsList} displayDrawer={true} />
+  )
+  expect(screen.getAllByRole('listitem').length).toBe(2)
+  expect(screen.getByText(/New training available/i)).toBeInTheDocument()
+  expect(screen.getByText(/New course available/i)).toBeInTheDocument()
+
+  notificationsList = [{
+    id: 1,
+    type: 'urgent',
+    value: 'New video available'
+  }, {
+    id: 2,
+    type: 'urgent',
+    value: 'New podcast available'
+  }]
+
+  rerender(
+    <Notifications notifications={notificationsList} displayDrawer={true} />
+  )
+  expect(screen.getAllByRole('listitem').length).toBe(2)
+  expect(screen.getByText(/New training available/i)).toBeInTheDocument()
+  expect(screen.getByText(/New course available/i)).toBeInTheDocument()
+  expect(screen.queryByText(/New video available/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/New podcast available/i)).not.toBeInTheDocument()
+})
+
+test('should re-render when length of notification is not the same', () => {
+  let notificationsList = [{
+    id: 1,
+    type: 'default',
+    value: 'New training available'
+  }]
+
+  const { rerender } = render(
+    <Notifications notifications={notificationsList} displayDrawer={true} />
+  )
+  expect(screen.getAllByRole('listitem').length).toBe(1)
+  expect(screen.getByText(/New training available/i)).toBeInTheDocument()
+
+  notificationsList = [{
+    id: 1,
+    type: 'urgent',
+    value: 'New video available'
+  }, {
+    id: 2,
+    type: 'urgent',
+    value: 'New podcast available'
+  }]
+
+  rerender(
+    <Notifications notifications={notificationsList} displayDrawer={true} />
+  )
+  expect(screen.getAllByRole('listitem').length).toBe(2)
+  expect(screen.getByText(/New video available/i)).toBeInTheDocument()
+  expect(screen.getByText(/New podcast available/i)).toBeInTheDocument()
+  expect(screen.queryByText(/New training available/i)).not.toBeInTheDocument()
+})
