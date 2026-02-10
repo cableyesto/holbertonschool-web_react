@@ -5,3 +5,13 @@
   --color-table-header: #deb5b5;
   --color-table-rows: #CDCDCD;
 }
+
+/* Optional: Tailwind utility layer to support opacity on bg colors */
+@layer utilities {
+  .bg-table-header {
+    background-color: var(--color-table-header);
+  }
+  .bg-table-rows {
+    background-color: var(--color-table-rows);
+  }
+}
