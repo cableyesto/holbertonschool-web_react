@@ -3,7 +3,7 @@ import BodySection from './BodySection.jsx'
 function BodySectionWithMarginBottom({title, children}) {
   return (
     <>
-      <div className='bodySectionWithMargin mb-[240px]'>
+      <div className='bodySectionWithMargin mb-[100px]'>
         <BodySection title={title}>
           {children}
         </BodySection>
