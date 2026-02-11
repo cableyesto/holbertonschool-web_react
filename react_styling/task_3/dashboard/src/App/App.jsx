@@ -1,4 +1,3 @@
-import './App.css'
 import { Component } from 'react'
 import Header from '../Header/Header.jsx'
 import Notifications from '../Notifications/Notifications.jsx'
@@ -8,12 +7,11 @@ import {getLatestNotification} from '../utils/utils.js'
 import CourseList from '../CourseList/CourseList.jsx'
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom.jsx'
 import BodySection from '../BodySection/BodySection.jsx'
-import WithLogging from '../HOC/WithLogging.jsx'
 
 class App extends Component {
   constructor(props) {
     super(props)
-  };
+  }
 
   static defaultProps = {
     isLoggedIn: false,
@@ -58,12 +56,12 @@ class App extends Component {
 
     return (
       <>
-        <div className='root-notifications'>
+        <div className='root-notifications flex flex-col items-end'>
           <Notifications notifications={notificationsList} displayDrawer={true} />
         </div>
         <Header />
-        <div className='main-body'>
-          {this.props.isLoggedIn ? 
+        <div className='main-body h-full'>
+          {this.props.isLoggedIn ?
             <BodySectionWithMarginBottom title='Course list'>
               <CourseList courses={coursesList}/>
             </BodySectionWithMarginBottom>

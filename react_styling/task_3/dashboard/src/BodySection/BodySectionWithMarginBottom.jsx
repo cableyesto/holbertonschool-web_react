@@ -1,16 +1,15 @@
 import BodySection from './BodySection.jsx'
-import './BodySectionWithMarginBottom.css'
 
 function BodySectionWithMarginBottom({title, children}) {
   return (
     <>
-      <div className='bodySectionWithMargin'>
+      <div className='bodySectionWithMargin mb-[240px]'>
         <BodySection title={title}>
           {children}
         </BodySection>
       </div>
     </>
   )
-};
+}
 
 export default BodySectionWithMarginBottom
