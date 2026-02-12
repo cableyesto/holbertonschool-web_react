@@ -42,7 +42,7 @@ class App extends Component {
     }, {
       id: 2,
       type: 'urgent',
-      value: 'New resume available'
+      value: 'New course available'
     }, {
       id: 3,
       type: 'urgent',
@@ -71,7 +71,7 @@ class App extends Component {
             </BodySectionWithMarginBottom>
           }
           <BodySection title='News from the School'>
-            <p>Holberton School News goes here</p>
+            <p>Holberton School news goes here</p>
           </BodySection>
         </div>
         <Footer isIndex={true} />
