@@ -62,7 +62,7 @@ class App extends Component {
         <Header />
         <div className='main-body h-full'>
           {this.props.isLoggedIn ?
-            <BodySectionWithMarginBottom title='Course list'>
+            <BodySectionWithMarginBottom title='course list'>
               <CourseList courses={coursesList}/>
             </BodySectionWithMarginBottom>
             :
