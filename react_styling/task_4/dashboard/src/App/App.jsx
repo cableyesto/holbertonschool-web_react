@@ -11,7 +11,7 @@ import { getLatestNotification } from '../utils/utils'
 
 class App extends React.Component {
   static defaultProps = {
-    isLoggedIn: false,
+    isLoggedIn: true,
     logOut: () => { }
   }
   constructor(props) {
