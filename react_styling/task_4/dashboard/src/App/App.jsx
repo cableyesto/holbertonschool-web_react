@@ -54,7 +54,7 @@ class App extends React.Component {
       <>
         <div className="relative px-3 min-h-screen flex flex-col">
           <div className="absolute top-0 right-0 z-10">
-            <Notifications notifications={notificationsList} displayDrawer={false} />
+            <Notifications notifications={notificationsList} displayDrawer={true} />
           </div>
           <div className="flex-1">
             <Header />
