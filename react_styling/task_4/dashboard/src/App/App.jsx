@@ -11,7 +11,7 @@ import { getLatestNotification } from '../utils/utils'
 
 class App extends React.Component {
   static defaultProps = {
-    isLoggedIn: true,
+    isLoggedIn: false,
     logOut: () => { }
   }
   constructor(props) {
@@ -47,7 +47,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { isLoggedIn = false } = this.props
+    const { isLoggedIn = true } = this.props
     const { notificationsList, coursesList } = this.state
 
     return (
