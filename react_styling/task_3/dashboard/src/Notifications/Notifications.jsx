@@ -1,85 +1,55 @@
-import { Component } from 'react'
+import React from 'react'
+import NotificationItem from './NotificationItem'
 import closeButton from '../assets/close-button.png'
-import NotificationItem from './NotificationItem.jsx'
 
-class Notifications extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  static defaultProps = {
-    notifications: [],
-    displayDrawer: false
-  }
-
-  markAsRead(id) {
-    console.log(`Notification ${id} has been marked as read`)
-  }
-
-  shouldComponentUpdate(nextProps) {
-    if (this.props.notifications.length !== nextProps.notifications.length) {
-      return true
-    }
-    return false
-  }
-
-  render() {
-    return (
-      <>
-        <div className='notification-title'>
-          Your notifications
-        </div>
-        { this.props.displayDrawer ? (
-          <>
-            { this.props.notifications.length === 0 ? (
-              <>
-                <div className='notification-items border border-dashed border-[var(--main-color)] w-1/4 p-[6px]'>
-                  <p>No new notification for now</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className='notification-items border border-dashed border-[var(--main-color)] w-1/4 p-[6px]'>
-                  <p>Here is the list of notifications</p>
-                  <ul>
-                    {
-                      this.props.notifications.map(notification => {
-                        return <NotificationItem 
-                          key={notification.id}
-                          type={notification.type}
-                          value={notification.value}
-                          html={notification.html}
-                          markAsRead={() => {this.markAsRead(notification.id)}}
-                        />
-                      })
-                    }
-                  </ul>
-                </div>
-                <button
-                  style={{
-                    width: '8px',
-                    height: '8px',
-                    border: '0px',
-                    background: 'none',
-                    position: 'absolute',
-                    top: '10px',
-                    right: '20px'
-                  }}
-                  aria-label='Close'
-                  onClick={() => console.log('Close button has been clicked')}
-                >
-                  <img src={closeButton} alt='close-button' />
-                </button>
-              </>
-            )}
-          </>
-        ) : (
-          <></>
-        )
+class Notifications extends React.Component {
+    shouldComponentUpdate(nextProps) {
+        if (nextProps.notifications.length !== this.props.notifications.length) {
+            return true
         }
-      </>
-    )
-  }
-}
+        return false
+    }
+    markAsRead(id) {
+        console.log(`Notification ${id} has been marked as read`)
+    }
 
+    render() {
+        const { displayDrawer = false, notifications = [] } = this.props
+        return (
+            <>
+                <div className="notification-title absolute right-3 top-1">Your notifications</div>
+                {displayDrawer && (
+                    <div className="notification-items relative border-[3px] border-dotted border-[color:var(--main-color)] p-1.5 w-1/4 float-right mt-7">
+                        {notifications.length === 0 ? (
+                            <p>No new notification for now</p>
+                        ) : (
+                            <>
+                                <div className="relative">
+                                    <p className='m-0'>Here is the list of notifications</p>
+                                    <button className="absolute cursor-pointer right-0 top-0 bg-transparent"
+                                        onClick={() => console.log("Close button has been clicked")}
+                                        aria-label='Close'>
+                                        <img src={closeButton} alt="close-button" className="w-3 h-3" />
+                                    </button>
+                                    <ul className='list-[square] pl-5'>
+                                        {notifications.map((notification) => (
+                                            <NotificationItem
+                                                key={notification.id}
+                                                type={notification.type}
+                                                value={notification.value}
+                                                html={notification.html}
+                                                markAsRead={this.markAsRead}
+                                                id={notification.id}
+                                            />
+                                        ))}
+                                    </ul>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+            </>
+        )
+    }
+}
 export default Notifications

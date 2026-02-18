@@ -1,23 +1,11 @@
-import {render, screen} from '@testing-library/react'
-import Footer from './Footer.jsx'
+import { render, screen } from '@testing-library/react'
+import Footer from './Footer'
+import { getFooterCopy, getCurrentYear } from '../utils/utils'
 
-test('should render copyright', () => {
-  render(<Footer isIndex={true} />)
+test('renders a p element string Copyright {the current year} - Holberton School, whenever the getFooterCopy() “isIndex” argument is set to true', () => {
+    render(<Footer isIndex={true}/>)
 
-  const date = new Date();
-  const year = date.getFullYear();
-
-  expect(screen.getByText(new RegExp(`^Copyright ${year} - holberton School$`, 'i')))
-})
-
-// Additionnal test for task 1
-test('should render the paragraph element with correct copyright', () => {
-  render(<Footer isIndex={true} />)
-
-  const date = new Date();
-  const year = date.getFullYear();
-
-  expect(screen.getByRole('paragraph')).toHaveTextContent(
-    new RegExp(`^Copyright ${year} - holberton School$`, 'i')
-  )
+    const currentYear = getCurrentYear()
+    const footerCopy = getFooterCopy(true)
+    expect(screen.getByText(new RegExp(`copyright ${currentYear} - ${footerCopy}`, 'i'))).toBeInTheDocument()
 })

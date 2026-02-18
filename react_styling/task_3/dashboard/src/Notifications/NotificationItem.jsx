@@ -1,35 +1,47 @@
 import { PureComponent } from 'react'
+import { getLatestNotification } from '../utils/utils'
 
 class NotificationItem extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
+    static defaultProps = {
+        markAsRead: () => {},
+        type: "default",
+        html: "",
+        value: "",
+        id: 1
+    }
 
-  static defaultProps = {
-    type: 'default',
-    value: '',
-    html: null
-  }
-
-  render() {
-    const hasHTML = this.props.html && (typeof this.props.html === 'object' || typeof this.props.html === 'string');
-
-    return (
-      <li
-        data-notification-type={this.props.type}
-        // style={{ color: this.props.type === 'default' ? 'blue' : 'red' }}
-        className={
-          this.props.type === 'default'
-            ? 'text-[var(--default-notification-item)]'
-            : 'text-[var(--urgent-notification-item)]'
+    render() {
+        const { markAsRead, type, html, value, id } = this.props
+        const innerHtml = { __html: getLatestNotification() }
+        if (type === "default")
+            return (
+                <li onClick={() => markAsRead(id)}
+                    data-notification-type={type}
+                    className="text-[color:var(--default-notification-item)] pl-1">
+                    {value}
+                </li>
+            )
+        else if (type === "urgent" && html) {
+            return (
+                <li
+                    onClick={() => markAsRead(id)}
+                    data-notification-type={type}
+                    dangerouslySetInnerHTML={innerHtml}
+                    className="text-[color:var(--urgent-notification-item)] pl-1">
+                </li>
+            )
         }
-        onClick={this.props.markAsRead}
-        {...(hasHTML ? { dangerouslySetInnerHTML: typeof this.props.html === 'object' ? this.props.html : { __html: this.props.html } } : {})}
-      >
-        {!hasHTML ? this.props.value : null}
-      </li>
-    );
-  }
+        else if (type === "urgent") {
+            return (
+                <li
+                    onClick={() => markAsRead(id)}
+                    data-notification-type={type}
+                    className="text-[color:var(--urgent-notification-item)] pl-1"
+                >
+                    {value}
+                </li>
+            )
+        }
+    }
 }
-
 export default NotificationItem

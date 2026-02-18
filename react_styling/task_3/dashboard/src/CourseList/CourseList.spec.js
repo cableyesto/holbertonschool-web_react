@@ -1,24 +1,27 @@
-import {render, screen} from '@testing-library/react'
-import CourseList from './CourseList.jsx'
+import { render, screen } from '@testing-library/react'
+import CourseList from './CourseList'
 
-test('should render 5 different rows when receiving array of courses', () => {
-  const courses = [
-    { id: 1, name: 'Alice', credit: 1 },
-    { id: 2, name: 'Bob', credit: 2 },
-    { id: 3, name: 'Carlos', credit: 4 }
-  ]
-  render(
-    <CourseList courses={courses} />
-  )
-  
-  expect(screen.getAllByRole('row').length).toBe(5)
+let consoleSpy
+
+beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation()
 })
 
-test('should render 1 row when receiving empty array', () => {
-  const courses = []
-  render(
-    <CourseList courses={courses} />
-  )
-  
-  expect(screen.getAllByRole('row').length).toBe(1)
+afterEach(() => {
+    consoleSpy.mockRestore()
+})
+
+test('renders 5 different rows when it receive an array of courses objects', () => {
+    const coursesListTestExample = [
+        {id: 1, name: "PHP", credit: 60},
+        {id: 2, name: "Symfony", credit: 40},
+        {id: 3, name: "Sylius", credit: 20}
+    ]
+    render(<CourseList courses={coursesListTestExample}/>)
+    expect(screen.getAllByRole('row')).toHaveLength(5)
+})
+
+test('renders 1 row when receiving an empty array', () => {
+    render(<CourseList courses={[]}/>)
+    expect(screen.getAllByRole('row')).toHaveLength(1)
 })

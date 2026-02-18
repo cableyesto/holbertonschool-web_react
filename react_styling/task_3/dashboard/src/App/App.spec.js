@@ -1,107 +1,65 @@
-// import {expect, test} from '@jest/globals'
-import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { fireEvent, render, screen } from '@testing-library/react'
 import App from './App.jsx'
 
-test('should render title', () => {
-  render(<App />)
+let consoleSpy
 
-  const title = screen.getByRole('heading', {level: 1})
-  expect(title).toBeInTheDocument()
-  expect(title).toHaveTextContent(/School dashboard/i)
+beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation()
 })
 
-test('should render two paragraphs', () => {
-  render(<App />)
-
-  expect(screen.getByText(/Login to access the full dashboard/i))
-  expect(screen.getByText(/Copyright 2026 - holberton School/i))
-})
-
-test('should render the image', () => {
-  render(<App />)
-
-  expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument()
-})
-
-test('should render two inputs for login', () => {
-  render(<App />)
-
-  const inputs = screen.getAllByRole('textbox')
-  const password = screen.getByLabelText(/password/i)
-
-  expect(password)
-  expect(inputs.length + 1).toBe(2)
-})
-
-test('should render two label elements', () => {
-  render(<App />)
-
-  const labels = screen.getAllByText(/email|password/i)
-
-  expect(labels).toHaveLength(2)
-})
-
-test('should render one button', () => {
-  render(<App />)
-
-  expect(screen.getByText(/ok/i))
-})
-
-// Implement functionnality to toggle rendering based on isLoggedIn
-test('should render Login form when isLoggedIn is false', () => {
-  render(<App isLoggedIn={false} />)
-
-  expect(screen.getByText(/Login/i))
-})
-
-test('should render CourseList table when isLoggedIn is true', () => {
-  render(<App isLoggedIn={true} />)
-
-  const table = screen.getByRole('table')
-
-  expect(table.id).toBe('CourseList')
-})
-
-// Clean up
 afterEach(() => {
-  jest.restoreAllMocks()
+    consoleSpy.mockRestore()
 })
 
-test('should call once the logOut function after shortcut', async () => {
-  jest.spyOn(window, 'alert').mockImplementation(() => {})
-  const mockProp = jest.fn()
-  const user = userEvent.setup()
-
-  render(<App isLoggedIn={false} logOut={mockProp} />)
-
-  await user.keyboard('{Control>}{h}{/Control}')
-
-  expect(mockProp.mock.calls).toHaveLength(1)
+test('renders login and copyright paragraph with the correct content', async () => {
+    render(<App isLoggedIn={false}/>)
+    expect(screen.getByText(/^login to access the full dashboard$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^copyright/i)).toBeInTheDocument()   
 })
 
-test('should called the alert function with correct text', async () => {
-  const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
-  const user = userEvent.setup()
-  const noop = () => {}
-
-  render(<App isLoggedIn={false} logOut={noop} />)
-
-  await user.keyboard('{Control>}{h}{/Control}')
-
-  expect(alertSpy).toHaveBeenCalledWith(
-    expect.stringMatching(/Logging you out/i)
-  )
+test('renders Email and Password label element', async () => {
+    render(<App isLoggedIn={false}/>)
+    expect(screen.getByText(/^email:$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^password:$/i)).toBeInTheDocument()
 })
 
-test('should display by default body content', () => {
-  render(<App />)
+test('renders the Login component when isLoggedIn is false', () => {
+    render(<App isLoggedIn={false} />)
+    expect(screen.getByText(/^login to access the full dashboard$/i)).toBeInTheDocument()
+})
 
-  const paragraph = screen.getByText(/Holberton School News goes here/i)
-  const title = screen.getByText(/News from the School/i)
+test('renders the CourseList component when isLoggedIn is true', () => {
+    render(<App isLoggedIn={true} />)
+    expect(screen.getByRole('table')).toBeInTheDocument()
+})
 
-  expect(paragraph).toBeInTheDocument()
-  expect(paragraph).toHaveRole('paragraph')
-  expect(title).toBeInTheDocument()
-  expect(title).toHaveRole('heading')
+test('verify that logOut is called once when ctrl+h are pressed', () => {
+    const mockLogOut = jest.fn()
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation()
+
+    render(<App logOut={mockLogOut}/>)
+
+    fireEvent.keyDown(document, {key: 'h', ctrlKey: true})
+    expect(mockLogOut).toHaveBeenCalledTimes(1)
+    alertSpy.mockRestore()
+})
+
+test('checks that alert function is called with "Logging you out" message', () => {
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation()
+    render(<App />)
+    fireEvent.keyDown(document, {
+        key: 'h',
+        ctrlKey: true
+    })
+    expect(alertSpy).toHaveBeenCalledWith('Logging you out')
+    alertSpy.mockRestore()
+})
+
+test('check that a title with the text News from the School, and a paragraph element with the text Holberton School News goes here are displayed by default in the App component', () => {
+    render(<App />)
+    const bodySectionTitle = screen.getByText(/news from the school/i)
+    const bodySectionParagraph = screen.getByText(/holberton school news goes here/i)
+
+    expect(bodySectionTitle).toBeInTheDocument()
+    expect(bodySectionParagraph).toBeInTheDocument()
 })

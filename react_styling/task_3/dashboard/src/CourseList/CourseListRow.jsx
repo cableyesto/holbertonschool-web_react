@@ -1,31 +1,43 @@
-function CourseListRow({ isHeader = false, textFirstCell = '', textSecondCell = null }) {
-  if (isHeader) {
-    return (
-      <>
-        <tr className='bg-table-header opacity-[66%]'>
-          {
-            textSecondCell === null ? (
-              <th className='border border-gray-400' colSpan={2}>{textFirstCell}</th>
-            ) : (
-              <>
-                <th className='border border-gray-400'>{textFirstCell}</th>
-                <th className='border border-gray-400'>{textSecondCell}</th>
-              </>
+function CourseListRow({
+    isHeader= false, 
+    textFirstCell = "",
+    textSecondCell = null
+}) {
+    const headerColor = "bg-[var(--color-table-header)]/[0.66]"
+    const rowColor = "bg-[var(--color-table-rows)]/[0.45]"
+    const headerBorder = "border border-gray-400"
+    const cellBorder = "border border-gray-400 pl-2"
+    if (isHeader) {
+        if (textSecondCell === null) {
+            return (
+                <tr className={headerColor}>
+                    <th className={headerBorder} colSpan="2">
+                        {textFirstCell}
+                    </th>
+                </tr>
             )
-          }
-        </tr>
-      </>
-    )
-  } else {
+        }
+        return (
+            <tr className={headerColor}>
+                <th className={headerBorder}>
+                    {textFirstCell}
+                </th>
+                <th className={headerBorder}>
+                    {textSecondCell}
+                </th>
+            </tr>
+        )
+    }
     return (
-      <>
-        <tr className='bg-table-rows opacity-[45%]'>
-          <td className='border border-gray-400 pl-[8px]'>{textFirstCell}</td>
-          <td className='border border-gray-400 pl-[8px]'>{textSecondCell}</td>
+        <tr className={rowColor}>
+            <td className={cellBorder}>
+                {textFirstCell}
+            </td>
+            <td className={cellBorder}>
+                {textSecondCell}
+            </td>
         </tr>
-      </>
     )
-  }
 }
 
 export default CourseListRow

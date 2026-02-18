@@ -1,49 +1,23 @@
-import {render, screen} from '@testing-library/react'
-import CourseListRow from './CourseListRow.jsx'
+import { render, screen, within } from '@testing-library/react'
+import CourseListRow from './CourseListRow'
 
-test('isHeader true and textSecondCell null', () => {
-  render(
-    <>
-      <table>
-        <thead>
-          <CourseListRow isHeader={true} textFirstCell='Testing' textSecondCell={null} />
-        </thead>
-      </table>
-    </>
-  )
+test("renders one column header with attribute colspan  = 2 when prop isHeader is true and textSecondCell is null", () => {
+    render(<table><tbody><CourseListRow isHeader={true} textSecondCell={null}/></tbody></table>)
 
-  const tableHeader = screen.getByText('Testing')
-  
-  expect(screen.getAllByRole('columnheader').length).toBe(1)
-  // expect(tableHeader.colSpan).toBe(2)
-  expect(tableHeader).toHaveAttribute('colspan', '2')
+    expect(screen.getAllByRole('columnheader')).toHaveLength(1)
+    expect(screen.getByRole('columnheader')).toHaveAttribute('colspan', '2')
 })
 
-test('isHeader true and textSecondCell is not null', () => {
-  render(
-    <>
-      <table>
-        <thead>
-          <CourseListRow isHeader={true} textFirstCell='Testing' textSecondCell='Testing 2' />
-        </thead>
-      </table>
-    </>
-  )
+test("renders 2 <th> cells when prop isHeader is true and textSecondCell is not null", () => {
+    render(<table><tbody><CourseListRow isHeader={true} textSecondCell={""}/></tbody></table>)
 
-  expect(screen.getAllByRole('columnheader').length).toBe(2)
+    expect(screen.getAllByRole('columnheader')).toHaveLength(2)
 })
 
-test('should render two td if isHeader false', () => {
-  render(
-    <>
-      <table>
-        <tbody>
-          <CourseListRow isHeader={false} textFirstCell='Testing' textSecondCell='Testing2' />
-        </tbody>
-      </table>
-    </>
-  )
+test("renders 2 <td> cells within a tr element when prop isHeader is false", () => {
+    render(<table><tbody><CourseListRow isHeader={false}/></tbody></table>)
 
-  expect(screen.getAllByRole('row').length).toBe(1)
-  expect(screen.getAllByRole('cell').length).toBe(2)
+    const tr = screen.getByRole('row')
+    expect(tr).toBeInTheDocument()
+    expect(within(tr).getAllByRole('cell')).toHaveLength(2)
 })

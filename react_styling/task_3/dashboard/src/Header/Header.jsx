@@ -1,14 +1,14 @@
 import holbertonLogo from '../assets/holberton-logo.jpg'
 
 function Header() {
-  return (
-    <>
-      <div className='App-header flex'>
-        <img src={holbertonLogo} alt="holberton logo" className='w-[250px] h-[250px]'/>
-        <h1 className='flex items-center text-4xl font-bold text-[var(--main-color)]'>School dashboard</h1>
-      </div>
-    </>
-  )
+    return (
+        <>
+        <div className="App-heade flex items-center py-2">
+            <img className="App-logo h-60 pointer-events-none" src={holbertonLogo} alt="holberton logo" />
+            <h1 className="font-bold text-[color:var(--main-color)] text-5xl">School dashboard</h1>
+        </div>
+        </>
+    )
 }
 
 export default Header

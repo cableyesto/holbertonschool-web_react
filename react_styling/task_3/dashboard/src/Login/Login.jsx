@@ -1,20 +1,27 @@
+import React from 'react'
 import WithLogging from '../HOC/WithLogging'
 
-function Login() {
-  return (
-    <>
-      <div className='border-t-3 border-[var(--main-color)]'>
-        <div className='App-body mt-[20px] ml-[20px] h-full'>
-          <p>Login to access the full dashboard</p>
-          <label htmlFor='email'>Email:</label>
-          <input type='email' id='email' className='border rounded-sm' />
-          <label htmlFor='password'>Password:</label>
-          <input type='password' id='password' className='border rounded-sm' />
-          <button className='border rounded-sm'>OK</button>
+class Login extends React.Component {
+  render() {
+    return (
+      <>
+        <div className="App-body flex flex-col p-5 pl-10 h-[45vh] border-t-4 border-[color:var(--main-color)]">
+          <p className="text-xl">Login to access the full dashboard</p>
+          <form action="" className="mt-8 text-lg">
+            <label htmlFor="email" className="pr-2">
+              Email:
+              <input type="email" name="email" id="email" className="border rounded pl-2"/>
+            </label>
+            <label htmlFor="password" className="pl-2 pr-2">
+              Password:
+              <input type="password" name="password" id="password" className="border rounded pl-2"/>
+            </label>
+            <button className="label-button cursor-pointer border px-1 rounded ml-2" type="submit">OK</button>
+          </form>
         </div>
-      </div>
-    </>
-  )
+      </>
+    )
+  }
 }
-
-export default WithLogging(Login)
+const LoginWithLogging = WithLogging(Login)
+export default LoginWithLogging

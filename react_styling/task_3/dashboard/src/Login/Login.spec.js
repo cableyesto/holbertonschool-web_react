@@ -1,44 +1,44 @@
-import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event';
-import Login from './Login.jsx'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import Login from './Login'
 
-test('should render one button', () => {
-  render(<Login />)
+let consoleSpy
 
-  expect(screen.getByText(/ok/i))
+beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation()
 })
 
-// Additionnal tests for task 1
-test('should verify that correct elements are rendered', () => {
-  render(<Login />)
-
-  const emailInput = screen.getByLabelText(/email/i)
-  const passwordInput = screen.getByLabelText(/password/i)
-  const labels = screen.getAllByText(/email|password/i)
-  const button = screen.getByRole('button')
-
-  expect(emailInput).toBeInTheDocument()
-  expect(passwordInput).toBeInTheDocument()
-  expect(labels).toHaveLength(2)
-  expect(button).toBeInTheDocument()
+afterEach(() => {
+    consoleSpy.mockRestore()
 })
 
-test('should focus on the 2 inputs when the related label is clicked', async () => {
-  render(<Login />)
+test('renders 2 labels, 2 inputs and 1 button element', () => {
+    const { container } = render(<Login />)
+    
+    const labels = container.querySelectorAll('label')
+    expect(labels).toHaveLength(2)
 
-  // email focus
-  const emailInput = screen.getByLabelText(/email/i)
-  const emailLabel = screen.getByText(/email/i)
+    const inputs = container.querySelectorAll('input')
+    expect(inputs).toHaveLength(2)
 
-  await userEvent.click(emailLabel)
+    const button = container.querySelectorAll('button')
+    expect(button).toHaveLength(1)
 
-  expect(emailInput).toHaveFocus()
-   
-  // password focus
-  const passwordInput = screen.getByLabelText(/password/i)
-  const passwordLabel = screen.getByText(/password/i)
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', {name: /ok/i})).toBeInTheDocument()
+})
 
-  await userEvent.click(passwordLabel)
+test('inputs elements get focused whenever the related label is clicked', async () => {
+    const user = userEvent.setup()
+    render(<Login />)
+    const emailInput = screen.getByLabelText(/email/i)
 
-  expect(passwordInput).toHaveFocus()
+    await user.click(emailInput)
+    expect(emailInput).toHaveFocus()
+
+    const passwordInput = screen.getByLabelText(/password/i)
+
+    await user.click(passwordInput)
+    expect(passwordInput).toHaveFocus()
 })
