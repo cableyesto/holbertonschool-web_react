@@ -12,22 +12,22 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      notificationsList: [
-        { id: 1, type: "default", value: "New course available" },
-        { id: 2, type: "urgent", value: "New resume available" },
-        { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
-      ],
-      coursesList: [
-        { id: 1, name: "ES6", credit: 60 },
-        { id: 2, name: "Webpack", credit: 20 },
-        { id: 3, name: "React", credit: 40 }
-      ]
-    }
+    // this.state = {
+    //   notificationsList: [
+    //     { id: 1, type: "default", value: "New course available" },
+    //     { id: 2, type: "urgent", value: "New resume available" },
+    //     { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
+    //   ],
+    //   coursesList: [
+    //     { id: 1, name: "ES6", credit: 60 },
+    //     { id: 2, name: "Webpack", credit: 20 },
+    //     { id: 3, name: "React", credit: 40 }
+    //   ]
+    // }
   }
 
   static defaultProps = {
-    isLoggedIn: false,
+    isLoggedIn: true,
     logOut: () => {}
   }
 
@@ -47,36 +47,38 @@ class App extends Component {
   }
 
   render() {
-    // const markup = { __html: getLatestNotification() };
-    // const notificationsList = [{
-    //   id: 1,
-    //   type: 'default',
-    //   value: 'New course available'
-    // }, {
-    //   id: 2,
-    //   type: 'urgent',
-    //   value: 'New course available'
-    // }, {
-    //   id: 3,
-    //   type: 'urgent',
-    //   html: markup
-    // }]
-    // const coursesList = [
-    //   { id: 1, name: 'ES6', credit: 60 },
-    //   { id: 2, name: 'Webpack', credit: 20 },
-    //   { id: 3, name: 'React', credit: 40 }
-    // ]
+    const markup = { __html: getLatestNotification() };
+    const notificationsList = [{
+      id: 1,
+      type: 'default',
+      value: 'New course available'
+    }, {
+      id: 2,
+      type: 'urgent',
+      value: 'New course available'
+    }, {
+      id: 3,
+      type: 'urgent',
+      html: markup
+    }]
+    const coursesList = [
+      { id: 1, name: 'ES6', credit: 60 },
+      { id: 2, name: 'Webpack', credit: 20 },
+      { id: 3, name: 'React', credit: 40 }
+    ]
 
     return (
       <>
         <div className='root-notifications flex flex-col items-end'>
-          <Notifications notifications={this.state.notificationsList} displayDrawer={true} />
+          {/* <Notifications notifications={this.state.notificationsList} displayDrawer={true} /> */}
+          <Notifications notifications={notificationsList} displayDrawer={true} />
         </div>
         <Header />
         <div className='main-body h-full'>
           {this.props.isLoggedIn ?
             <BodySectionWithMarginBottom title='course list'>
-              <CourseList courses={this.state.coursesList}/>
+              {/* <CourseList courses={this.state.coursesList}/> */}
+              <CourseList courses={coursesList}/>
             </BodySectionWithMarginBottom>
             :
             <BodySectionWithMarginBottom title='Log in to continue'>
