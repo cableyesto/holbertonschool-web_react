@@ -1,84 +1,57 @@
-import React from 'react';
-import closeButton from '../assets/close-button.png';
-import NotificationItem from './NotificationItem.jsx';
+import { PureComponent } from 'react'
+import NotificationItem from './NotificationItem'
+import closeButton from '../assets/close-button.png'
 
-class Notifications extends React.PureComponent {
-  static defaultProps = {
-    notifications: [],
-    displayDrawer: false,
-    markAsRead: () => {},
-    handleDisplayDrawer: () => {},
-    handleHideDrawer: () => {},
-  };
+class Notifications extends PureComponent {
+    constructor(props) {
+        super(props)
+    }
 
-  markNotificationAsRead = (id) => {
-    this.props.markAsRead(id);
-  };
+    render() {
+        const { 
+            displayDrawer = false, 
+            notifications = [], 
+            handleDisplayDrawer, 
+            handleHideDrawer, 
+            markNotificationAsRead } = this.props
 
-  render() {
-    const {
-      displayDrawer,
-      notifications,
-      handleDisplayDrawer,
-      handleHideDrawer,
-    } = this.props;
-
-    return (
-      <>
-        <div className="root-notifications absolute left-0 right-0 flex flex-col items-end z-50 pt-2 pr-4">
-          <div
-            className={`notification-title cursor-pointer ${notifications.length > 0 && !displayDrawer ? 'animate-bounce' : ''}`}
-            onClick={handleDisplayDrawer}
-          >
-            <p className="mb-1.5 text-right text-xs tablet:text-base">
-              Your notifications
-            </p>
-          </div>
-
-          {displayDrawer && (
-            <div className="fixed inset-0 z-50 bg-white tablet:relative tablet:inset-auto tablet:bg-transparent tablet:w-1/4 tablet:border-2 tablet:border-dashed tablet:border-(--main-color) tablet:p-1.5">
-              <div className="w-full h-full p-4 overflow-auto border-2 border-dashed border-(--main-color) tablet:border-0 tablet:p-0">
-                {notifications.length === 0 ? (
-                  <p className="mb-4 tablet:mb-0">
-                    No new notification for now
-                  </p>
-                ) : (
-                  <>
-                    <p className="mb-4 tablet:mb-0">
-                      Here is the list of notifications
-                    </p>
-                    <ul className="list-disc p-1 pl-6 tablet:pl-4">
-                      {notifications.map((notif) => (
-                        <NotificationItem
-                          key={notif.id}
-                          id={notif.id}
-                          type={notif.type}
-                          value={notif.value}
-                          html={notif.html}
-                          markAsRead={this.markNotificationAsRead}
-                        />
-                      ))}
-                    </ul>
-                  </>
+        return (
+            <>
+                <div className={`notification-title absolute right-3 top-1 whitespace-nowrap
+                ${notifications.length > 0 && displayDrawer === false ? "animate-bounce" : ""}`}
+                onClick={handleDisplayDrawer}>Your notifications</div>
+                {displayDrawer && (
+                    <div className="notification-items relative border-[3px] border-dotted border-[color:var(--main-color)] p-1.5 w-1/4 float-right mt-7 right-3 p-1.5 w-[380px] max-[912px]:w-full max-[912px]:fixed max-[912px]:top-0 max-[912px]:left-0 max-[912px]:right-0 max-[912px]:bottom-0 max-[912px]:z-50 max-[912px]:float-none max-[912px]:m-0 max-[912px]:p-3 max-[912px]:bg-white max-[912px]:overflow-y-hidden max-[912px]:h-screen max-[430px]:overflow-y-hidden max-[430px]:h-screen">
+                        {notifications.length === 0 ? (
+                            <p className="max-[912px]:text-[20px]">No new notification for now</p>
+                        ) : (
+                            <>
+                                <div className="relative">
+                                    <p className='m-0 max-[912px]:text-[20px]'>Here is the list of notifications</p>
+                                    <button className="absolute cursor-pointer right-0 top-0 bg-transparent"
+                                        onClick={handleHideDrawer}
+                                        aria-label='Close'>
+                                        <img src={closeButton} alt="close-button" className="w-3 h-3" />
+                                    </button>
+                                    <ul className='list-[square] pl-5 max-[912px]:p-0 max-[912px]:list-none'>
+                                        {notifications.map((notification) => (
+                                            <NotificationItem
+                                                key={notification.id}
+                                                type={notification.type}
+                                                value={notification.value}
+                                                html={notification.html}
+                                                markAsRead={markNotificationAsRead}
+                                                id={notification.id}
+                                            />
+                                        ))}
+                                    </ul>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 )}
-              </div>
-              <button
-                className="close-button fixed top-4 right-4 w-3 h-3 tablet:w-4 tablet:h-4 tablet:top-12 tablet:right-7 border-0 bg-transparent cursor-pointer z-[1000]"
-                aria-label="Close"
-                onClick={handleHideDrawer}
-              >
-                <img
-                  className="w-full h-full"
-                  src={closeButton}
-                  alt="close-button"
-                />
-              </button>
-            </div>
-          )}
-        </div>
-      </>
-    );
-  }
+            </>
+        )
+    }
 }
-
-export default Notifications;
+export default Notifications

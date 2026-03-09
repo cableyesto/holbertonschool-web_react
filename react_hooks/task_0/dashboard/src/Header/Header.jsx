@@ -1,31 +1,28 @@
-import { useContext } from 'react';
-import holbertonLogo from '../assets/holberton-logo.jpg';
-import newContext from '../Context/context.js';
+import React from 'react'
+import holbertonLogo from '../assets/holberton-logo.jpg'
+import newContext from '../Context/context'
 
-function Header() {
-  const { user, logOut } = useContext(newContext);
-  return (
-    <>
-      <header className="App-header flex flex-col tablet:flex-row items-center gap-2 tablet:gap-4 py-4">
-        <img
-          className="h-32 w-32 tablet:h-40 tablet:w-40 desktop:h-[250px] desktop:w-[250px]"
-          src={holbertonLogo}
-          alt="holberton logo"
-        />
-        <h1 className="text-[var(--main-color)] text-2xl tablet:text-3xl desktop:text-5xl font-bold">
-          School dashboard
-        </h1>
-      </header>
-      {user.isLoggedIn && (
-        <section id="logoutSection" className="pl-1">
-          Welcome <span className="font-bold">{user.email}</span>{' '}
-          <a className="italic" href="#" onClick={logOut}>
-            (logout)
-          </a>
-        </section>
-      )}
-    </>
-  );
+class Header extends React.Component {
+    static contextType = newContext
+    render() {
+        const { user, logOut } = this.context
+        return (
+            <>
+                <div className="App-header flex items-center py-2 max-[520px]:flex-col">
+                    <img className="App-logo h-60 pointer-events-none max-[520px]:h-60" src={holbertonLogo} alt="holberton logo" />
+                    <h1 className="font-bold text-[color:var(--main-color)] text-5xl max-[520px]:text-5xl max-[520px]:mt-2 max-[435px]:text-4xl">School dashboard</h1>
+                </div>
+                { user.isLoggedIn && (
+                <div id='logoutSection' className="mt-2 text-right pr-4">
+                    Welcome {user.email} (<a href="#" onClick={(event) => {
+                        event.preventDefault()
+                        logOut()
+                    }}>logout</a>)
+                </div>
+                )}
+            </>
+        )
+    }
 }
 
-export default Header;
+export default Header
