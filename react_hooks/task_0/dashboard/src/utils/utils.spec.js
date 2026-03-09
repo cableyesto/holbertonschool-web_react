@@ -1,31 +1,18 @@
-import { getCurrentYear, getFooterCopy, getLatestNotification } from './utils';
+import {expect, test} from '@jest/globals';
+import { getCurrentYear, getFooterCopy, getLatestNotification } from './utils'
 
-describe('getFullyYear', () => {
-  it('returns the current year', () => {
-    const currentYear = new Date().getFullYear();
-    expect(getCurrentYear()).toBe(currentYear);
-  });
-});
+test('the current year value', () => {
+    const currentYear = new Date().getFullYear()
+    expect(getCurrentYear()).toBe(currentYear)
+})
 
-describe('getFooterCopy', () => {
-  it('returns the footer copy for the index page', () => {
-    const isIndex = true;
-    const footerCopy = getFooterCopy(isIndex);
-    expect(footerCopy).toBe('Holberton School');
-  });
+test('the return value of getFooterCopy depending on the boolean parameter', () => {
+    const isIndexFalse = getFooterCopy(false)
+    expect(isIndexFalse).toBe("Holberton School main dashboard")
+    const isIndexTrue = getFooterCopy(true)
+    expect(isIndexTrue).toBe("Holberton School")
+})
 
-  it('returns the footer copy for non-index pages', () => {
-    const isIndex = false;
-    const footerCopy = getFooterCopy(isIndex);
-    expect(footerCopy).toBe('Holberton School main dashboard');
-  });
-});
-
-describe('getLatestNotification', () => {
-  it('returns the latest notification', () => {
-    const latestNotification = getLatestNotification();
-    expect(latestNotification).toBe(
-      '<strong>Urgent requirement</strong> - complete by EOD'
-    );
-  });
-});
+test('the return string from getLatestNotification', () => {
+    expect(getLatestNotification()).toBe("<strong>Urgent requirement</strong> - complete by EOD")
+})

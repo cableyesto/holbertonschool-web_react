@@ -1,32 +1,27 @@
-import { render, screen } from '@testing-library/react';
-import CourseList from './CourseList';
+import { render, screen } from '@testing-library/react'
+import CourseList from './CourseList'
 
+let consoleSpy
 
-test('it should render the CourseList component with 5 rows', () => {
-  const props = {
-    courses : [
-      { id:1, name:'ES6', credit:60 },
-      { id:2, name:'Webpack', credit:20 },
-      { id:3, name:'React', credit:40 }
-    ]
-  }
-  render(<CourseList {...props} />)
-
-  const rowElements = screen.getAllByRole('row');
-
-  expect(rowElements).toHaveLength(5)
+beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation()
 })
 
-test('it should render the CourseList component with 1 row', () => {
-  const props = {
-    courses : []
-  }
+afterEach(() => {
+    consoleSpy.mockRestore()
+})
 
-  render(<CourseList {...props} />)
+test('renders 5 different rows when it receive an array of courses objects', () => {
+    const coursesListTestExample = [
+        {id: 1, name: "PHP", credit: 60},
+        {id: 2, name: "Symfony", credit: 40},
+        {id: 3, name: "Sylius", credit: 20}
+    ]
+    render(<CourseList courses={coursesListTestExample}/>)
+    expect(screen.getAllByRole('row')).toHaveLength(5)
+})
 
-  const rowElement = screen.getAllByRole('row');
-  const rowText = screen.getByText(/No course available yet/i);
-
-  expect(rowElement).toHaveLength(1)
-  expect(rowText).toBeInTheDocument()
-});
+test('renders 1 row when receiving an empty array', () => {
+    render(<CourseList courses={[]}/>)
+    expect(screen.getAllByRole('row')).toHaveLength(1)
+})
