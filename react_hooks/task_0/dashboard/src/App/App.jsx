@@ -1,129 +1,135 @@
-import React from 'react'
-import BodySection from '../BodySection/BodySection'
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom'
-import Notifications from '../Notifications/Notifications'
-import Header from '../Header/Header'
-import LoginWithLogging from '../Login/Login'
-import Footer from '../Footer/Footer'
-import CourseListWithLogging from '../CourseList/CourseList'
-import { getLatestNotification } from '../utils/utils'
-// eslint-disable-next-line no-unused-vars
-import newContext from '../Context/context'
+import React from 'react';
+import { getLatestNotification } from '../utils/utils.js';
+import Notifications from '../Notifications/Notifications.jsx';
+import Header from '../Header/Header.jsx';
+import Login from '../Login/Login.jsx';
+import Footer from '../Footer/Footer.jsx';
+import CourseList from '../CourseList/CourseList.jsx';
+import BodySectionWithMargin from '../BodySection/BodySectionWithMarginBottom.jsx';
+import BodySection from '../BodySection/BodySection.jsx';
+import WithLogging from '../HOC/WithLogging.jsx';
+import newContext from '../Context/context.js';
+
+const LoginWithLogging = WithLogging(Login);
+const CourseListWithLogging = WithLogging(CourseList);
 
 class App extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      displayDrawer: true,
+      displayDrawer: false,
       user: {
         email: '',
         password: '',
-        isLoggedIn: false
+        isLoggedIn: false,
       },
+      logOut: this.logOut,
       notifications: [
         { id: 1, type: 'default', value: 'New course available' },
         { id: 2, type: 'urgent', value: 'New resume available' },
-        { id: 3, type: 'urgent', html: { __html: getLatestNotification() } }
+        { id: 3, type: 'urgent', html: getLatestNotification() },
       ],
       courses: [
         { id: 1, name: 'ES6', credit: 60 },
         { id: 2, name: 'Webpack', credit: 20 },
-        { id: 3, name: 'React', credit: 40 }
-      ]
-    }
+        { id: 3, name: 'React', credit: 40 },
+      ],
+    };
   }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === 'h') {
+      alert('Logging you out');
+      this.logOut();
+    }
+  };
 
   logIn = (email, password) => {
     this.setState({
       user: {
-        email: email,
-        password: password,
+        email,
+        password,
         isLoggedIn: true,
-      }
-    })
-  }
+      },
+    });
+  };
 
   logOut = () => {
     this.setState({
       user: {
-
         email: '',
         password: '',
         isLoggedIn: false,
-      }
-    })
-  }
-  handleLogout = (event) => {
-    if (event.ctrlKey && event.key === "h") {
-      alert('Logging you out')
-      this.logOut()
-    }
-  }
-
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleLogout)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleLogout)
-  }
+      },
+    });
+  };
 
   handleDisplayDrawer = () => {
-    this.setState({ displayDrawer: true })
-  }
+    this.setState({ displayDrawer: true });
+  };
 
   handleHideDrawer = () => {
-    this.setState({ displayDrawer: false })
-  }
+    this.setState({ displayDrawer: false });
+  };
 
   markNotificationAsRead = (id) => {
-    console.log(`Notification ${id} has been marked as read`)
-    const updatedNotifications = this.state.notifications.filter(notification => notification.id !== id)
-
-    this.setState({ notifications: updatedNotifications })
-  }
+    console.log(`Notification ${id} has been marked as read`);
+    this.setState({
+      notifications: this.state.notifications.filter(notif => notif.id !== id)
+    });
+  };
 
   render() {
-    const { displayDrawer, user, notifications, courses } = this.state
-
     return (
-      <>
-        <newContext.Provider value={{
-          user: this.state.user,
-          logOut: this.logOut
-        }}>
-          <div className="relative px-3 min-h-screen flex flex-col">
-            <div className="absolute top-0 right-0 z-10">
-              <Notifications
-                notifications={notifications}
-                displayDrawer={displayDrawer}
-                handleDisplayDrawer={this.handleDisplayDrawer}
-                handleHideDrawer={this.handleHideDrawer}
-                markNotificationAsRead={this.markNotificationAsRead}
-              />
-            </div>
-            <div className="flex-1">
-              <Header />
-              {user.isLoggedIn ? (
-                <BodySectionWithMarginBottom title="Course list">
-                  <CourseListWithLogging courses={courses} />
-                </BodySectionWithMarginBottom>
+      <newContext.Provider
+        value={{ user: this.state.user, logOut: this.state.logOut }}
+      >
+        <div className="flex flex-col min-h-screen relative p-3 tablet:p-0 overflow-x-hidden">
+          <Notifications
+            notifications={this.state.notifications}
+            markAsRead={this.markNotificationAsRead}
+            displayDrawer={this.state.displayDrawer}
+            handleDisplayDrawer={this.handleDisplayDrawer}
+            handleHideDrawer={this.handleHideDrawer}
+          />
+          <Header />
+          <main className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col">
+              {this.state.user.isLoggedIn ? (
+                <BodySectionWithMargin title="Course list">
+                  <CourseListWithLogging courses={this.state.courses} />
+                </BodySectionWithMargin>
               ) : (
-                <BodySectionWithMarginBottom title="Log in to continue">
-                  <LoginWithLogging logIn={this.logIn} email={user.email} password={user.password} />
-                </BodySectionWithMarginBottom>
-              )
-              }
-              <BodySection title="News from the School">
-                <p>
-                  ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique, asperiores architecto blanditiis fuga doloribus sit illum aliquid ea distinctio minus accusantium, impedit quo voluptatibus ut magni dicta. Recusandae, quia dicta?              </p>
-              </BodySection>
+                <BodySectionWithMargin title="Log in to continue">
+                  <LoginWithLogging
+                    logIn={this.logIn}
+                    email={this.state.user.email}
+                    password={this.state.user.password}
+                  />
+                </BodySectionWithMargin>
+              )}
             </div>
-            <Footer />
-          </div>
-        </newContext.Provider>
-      </>
-    )
+            <BodySectionWithMargin>
+              <BodySection title="News from the School">
+                <p className="text-xs tablet:text-sm desktop:text-base">
+                  Holberton School News goes here
+                </p>
+              </BodySection>
+            </BodySectionWithMargin>
+          </main>
+          <Footer isIndex={false} />
+        </div>
+      </newContext.Provider>
+    );
   }
 }
-export default App
+
+export default App;

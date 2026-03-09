@@ -1,68 +1,77 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import Login from './Login'
+import { jest } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
+import Login from './Login';
+import userEvent from '@testing-library/user-event';
 
-let consoleSpy
+describe('Login component', () => {
+  test('renders without crashing', () => {
+    render(<Login />);
+    const loginText = screen.getByText(/login to access the full dashboard/i);
+    expect(loginText).toBeInTheDocument();
+  });
 
-beforeEach(() => {
-    consoleSpy = jest.spyOn(console, 'log').mockImplementation()
-})
+  test('should render two inputs for login', () => {
+    render(<Login />);
+    const inputs = screen.getAllByRole('textbox');
+    const password = screen.getByLabelText(/password/i);
+    expect(password);
+    expect(inputs.length + 1).toBe(2);
+  });
 
-afterEach(() => {
-    consoleSpy.mockRestore()
-})
+  test('should render two label elements', () => {
+    render(<Login />);
+    const labels = screen.getAllByText(/email|password/i);
+    expect(labels).toHaveLength(2);
+  });
 
-test('renders 2 labels, 2 inputs and 1 button element', () => {
-    const { container } = render(<Login />)
-    
-    const labels = container.querySelectorAll('label')
-    expect(labels).toHaveLength(2)
+  test('should render one button', () => {
+    render(<Login />);
+    expect(screen.getByRole('button', { name: /ok/i })).toBeInTheDocument();
+  });
 
-    const inputs = container.querySelectorAll('input')
-    expect(inputs).toHaveLength(2)
+  test('clicking label focuses the input', async () => {
+    render(<Login />);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const emailLabel = screen.getByText(/email/i);
+    const passwordLabel = screen.getByText(/password/i);
+    await userEvent.click(emailLabel);
+    expect(emailInput).toHaveFocus();
+    await userEvent.click(passwordLabel);
+    expect(passwordInput).toHaveFocus();
+  });
 
-    const button = container.querySelectorAll('button')
-    expect(button).toHaveLength(1)
+  test('submit button is disabled by default', () => {
+    render(<Login />);
+    const submitButton = screen.getByRole('button', { name: /ok/i });
+    expect(submitButton).toBeDisabled();
+  });
 
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', {name: /ok/i})).toBeInTheDocument()
-})
+  test('submit button becomes enabled after valid email and password', async () => {
+    render(<Login />);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submitButton = screen.getByRole('button', { name: /ok/i });
 
-test('inputs elements get focused whenever the related label is clicked', async () => {
-    const user = userEvent.setup()
-    render(<Login />)
-    const emailInput = screen.getByLabelText(/email/i)
+    expect(submitButton).toBeDisabled();
 
-    await user.click(emailInput)
-    expect(emailInput).toHaveFocus()
+    await userEvent.type(emailInput, 'user@test.com');
+    await userEvent.type(passwordInput, '12345678');
 
-    const passwordInput = screen.getByLabelText(/password/i)
+    expect(submitButton).toBeEnabled();
+  });
 
-    await user.click(passwordInput)
-    expect(passwordInput).toHaveFocus()
-})
+  test('logIn prop is called with email and password on form submit', async () => {
+    const logInMock = jest.fn();
+    render(<Login logIn={logInMock} />);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submitButton = screen.getByRole('button', { name: /ok/i });
 
-test('Checks that submit button is disabled by default', () => {
-    render(<Login />)
+    await userEvent.type(emailInput, 'user@test.com');
+    await userEvent.type(passwordInput, '12345678');
+    await userEvent.click(submitButton);
 
-    const button = screen.getByRole('button', {name: /ok/i})
-    expect(button).toBeDisabled()
-})
-
-test('Checks that submit button is enabled after valid input', async () => {
-    const user = userEvent.setup()
-    render(<Login />)
-    
-    const email = screen.getByLabelText(/email/i)
-    const password =screen.getByLabelText(/password/i)
-    const button = screen.getByRole('button', {name: /ok/i})
-
-    expect(button).toBeDisabled()
-    
-    await user.type(email, 'raymond.holt@nypd.com')
-    await user.type(password, 'verybadpassword')
-        
-    expect(button).toBeEnabled()
-
-})
+    expect(logInMock).toHaveBeenCalledWith('user@test.com', '12345678');
+  });
+});
