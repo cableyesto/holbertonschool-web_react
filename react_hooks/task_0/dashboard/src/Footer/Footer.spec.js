@@ -19,8 +19,7 @@ test('Does not render the "Contact us" link when user is logged out', () => {
         password: '',
         isLoggedIn: false
     }
-    const mockLogOut = jest.fn()
-    render(<newContext.Provider value={{ user: loggedOutUser, logOut: mockLogOut}}>
+    render(<newContext.Provider value={{ user: loggedOutUser }}>
         <Footer />
     </newContext.Provider>)
 
