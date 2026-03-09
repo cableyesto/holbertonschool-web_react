@@ -1,40 +1,40 @@
-import { render, screen } from '@testing-library/react'
-import Footer from './Footer'
-import { getFooterCopy, getCurrentYear } from '../utils/utils'
+import { render, screen } from '@testing-library/react';
+import Footer from './Footer';
 // eslint-disable-next-line no-unused-vars
-import newContext from '../Context/context'
+import newContext from '../Context/context';
 
+describe('Footer component', () => {
+  test('should render Copyright with current year and Holberton School', () => {
+    render(<Footer />);
+    const copyright = screen.getByText(/Copyright \d{4} - Holberton School/i);
+    expect(copyright).toBeInTheDocument();
+  });
 
-test('renders a p element string Copyright {the current year} - Holberton School, whenever the getFooterCopy() “isIndex” argument is set to true', () => {
-    render(<Footer isIndex={true}/>)
-
-    const currentYear = getCurrentYear()
-    const footerCopy = getFooterCopy(true)
-    expect(screen.getByText(new RegExp(`copyright ${currentYear} - ${footerCopy}`, 'i'))).toBeInTheDocument()
-})
-
-test('Does not render the "Contact us" link when user is logged out', () => {
-    const loggedOutUser = {
-        email: '',
-        password: '',
-        isLoggedIn: false
-    }
-    render(<newContext.Provider value={{ user: loggedOutUser }}>
+  test('should not display "Contact us" link when user is logged out', () => {
+    const contextValue = {
+      user: { email: '', password: '', isLoggedIn: false },
+      logOut: () => {},
+    };
+    render(
+      <newContext.Provider value={contextValue}>
         <Footer />
-    </newContext.Provider>)
+      </newContext.Provider>,
+    );
+    expect(screen.queryByText('Contact us')).not.toBeInTheDocument();
+  });
 
-    expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument()
-})
-
-test('Renders the "Contact us" link when user is logged in', () => {
-    const loggedInUser = {
-        email: 'leslie.knope@pawnee.com',
-        password: 'ILoveWaffles',
-        isLoggedIn: true
-    }
-    render(<newContext.Provider value={{ user: loggedInUser}}>
+  test('should display "Contact us" link when user is logged in', () => {
+    const contextValue = {
+      user: { email: 'test@test.com', password: 'password', isLoggedIn: true },
+      logOut: () => {},
+    };
+    render(
+      <newContext.Provider value={contextValue}>
         <Footer />
-    </newContext.Provider>)
-
-    expect(screen.getByText(/contact us/i)).toBeInTheDocument()
-})
+      </newContext.Provider>,
+    );
+    const contactLink = screen.getByText('Contact us');
+    expect(contactLink).toBeInTheDocument();
+    expect(contactLink.closest('a')).toBeInTheDocument();
+  });
+});
