@@ -1,148 +1,96 @@
-import { expect, jest, test } from '@jest/globals';
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import App from './App.jsx';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import App from './App';
 
-test('should render title', () => {
+test('The App component renders without crashing', () => {
   render(<App />);
-  expect(
-    screen.getByRole('heading', { name: /School dashboard/i }),
-  ).toBeInTheDocument();
 });
 
-test('should render the Login form by default (user not logged in)', () => {
+test('The App component renders Login when user is not logged in (default state)', () => {
   render(<App />);
-  expect(
-    screen.getByText(/Login to access the full dashboard/i),
-  ).toBeInTheDocument();
-  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+
+  const emailLabelElement = screen.getByLabelText(/email/i);
+  const passwordLabelElement = screen.getByLabelText(/password/i);
+  const buttonElements = screen.getAllByRole('button', { name: /ok/i })
+
+  expect(emailLabelElement).toBeInTheDocument()
+  expect(passwordLabelElement).toBeInTheDocument()
+  expect(buttonElements.length).toBeGreaterThanOrEqual(1)
 });
 
-test('should render the image', () => {
+test('CourseList is not displayed when user is not logged in', () => {
   render(<App />);
-  expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument();
+
+  const tableElement = screen.queryByRole('table');
+
+  expect(tableElement).not.toBeInTheDocument();
 });
 
-test('should render two inputs for login by default', () => {
-  render(<App />);
-  const inputs = screen.getAllByRole('textbox');
-  const password = screen.getByLabelText(/password/i);
-  expect(password).toBeInTheDocument();
-  expect(inputs.length + 1).toBe(2);
-});
-
-test('should render two label elements by default', () => {
-  render(<App />);
-  const labels = screen.getAllByText(/email|password/i);
-  expect(labels).toHaveLength(2);
-});
-
-test('should render one button by default', () => {
-  render(<App />);
-  expect(screen.getByText(/ok/i)).toBeInTheDocument();
-});
-
-test('should render footer copyright', () => {
-  render(<App />);
-  expect(
-    screen.getByText(/Copyright 2026 - holberton School/i),
-  ).toBeInTheDocument();
-});
-
-test('test logout with ctrl + h : alert called', () => {
-  const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
-  render(<App />);
-  const event = new KeyboardEvent('keydown', {
-    key: 'h',
-    ctrlKey: true,
-  });
-  document.dispatchEvent(event);
-  expect(alertMock).toHaveBeenCalledWith('Logging you out');
-  alertMock.mockRestore();
-});
-
-test('should display News section title and default paragraph', () => {
-  render(<App />);
-  expect(
-    screen.getByRole('heading', { name: /News from the School/i }),
-  ).toBeInTheDocument();
-  expect(
-    screen.getByText(/Holberton School News goes here/i),
-  ).toBeInTheDocument();
-});
-
-test('should not display CourseList when user is not logged in (default state)', () => {
-  render(<App />);
-  expect(screen.queryByText(/Course list/i)).not.toBeInTheDocument();
-  expect(
-    screen.getByText(/Login to access the full dashboard/i),
-  ).toBeInTheDocument();
-});
-
-test('should display CourseList after logging in via the login form', () => {
+test('when user logs in, CourseList is displayed and Login is not displayed', async () => {
+  const user = userEvent.setup();
   render(<App />);
 
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
+  const submitButton = screen.getByRole('button', { name: /ok/i });
 
-  fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
-  fireEvent.change(passwordInput, { target: { value: 'password123' } });
+  await user.type(emailInput, 'test@example.com');
+  await user.type(passwordInput, 'password123');
 
-  const submitButton = screen.getByText(/ok/i);
-  fireEvent.click(submitButton);
-
-  expect(
-    screen.getByRole('heading', { name: /Course list/i }),
-  ).toBeInTheDocument();
-  expect(
-    screen.queryByText(/Login to access the full dashboard/i),
-  ).not.toBeInTheDocument();
-});
-
-test('should show logoutSection and hide it after ctrl+h logout', () => {
-  const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
-  render(<App />);
-
-  const emailInput = screen.getByLabelText(/email/i);
-  const passwordInput = screen.getByLabelText(/password/i);
-  fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
-  fireEvent.change(passwordInput, { target: { value: 'password123' } });
-  fireEvent.click(screen.getByText(/ok/i));
-
-  expect(document.getElementById('logoutSection')).toBeInTheDocument();
-
-  const event = new KeyboardEvent('keydown', { key: 'h', ctrlKey: true });
-  act(() => {
-    document.dispatchEvent(event);
+  await waitFor(() => {
+    expect(submitButton).toBeEnabled();
   });
 
-  expect(document.getElementById('logoutSection')).toBeNull();
-  expect(
-    screen.getByText(/Login to access the full dashboard/i),
-  ).toBeInTheDocument();
+  await user.click(submitButton);
 
-  alertMock.mockRestore();
+  await waitFor(() => {
+    const tableElement = screen.getByRole('table');
+    expect(tableElement).toBeInTheDocument();
+  });
+
+  const loginForm = screen.queryByLabelText(/email/i);
+  expect(loginForm).not.toBeInTheDocument();
 });
 
-test('clicking on a notification item should remove it from the notification list and log the correct message', () => {
-  const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+test('it should display an alert and log out when ctrl+h is pressed', () => {
+  const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+
   render(<App />);
 
-  const notificationTitle = screen.getByText(/Your notifications/i);
-  fireEvent.click(notificationTitle);
+  fireEvent.keyDown(document, { ctrlKey: true, key: 'h' });
 
-  const items = screen.getAllByRole('listitem');
-  expect(items).toHaveLength(3);
+  expect(alertSpy).toHaveBeenCalledWith('Logging you out');
 
-  fireEvent.click(items[0]);
+  alertSpy.mockRestore();
+});
 
-  expect(consoleLogSpy).toHaveBeenCalledWith(
-    'Notification 1 has been marked as read',
-  );
+test('it should display "News from the School" title and paragraph by default', () => {
+  render(<App />);
 
-  fireEvent.click(notificationTitle);
-  const remainingItems = screen.queryAllByRole('listitem');
-  expect(remainingItems).toHaveLength(2);
+  const newsTitle = screen.getByRole('heading', { name: /news from the school/i });
+  const newsParagraph = screen.getByText(/holberton school news goes here/i);
 
-  consoleLogSpy.mockRestore();
+  expect(newsTitle).toBeInTheDocument();
+  expect(newsParagraph).toBeInTheDocument();
+});
+
+test('clicking on a notification item removes it from the list and logs to console', async () => {
+  const user = userEvent.setup();
+  const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+  render(<App />);
+
+  const notificationItems = screen.getAllByRole('listitem');
+  const initialCount = notificationItems.length;
+
+  await user.click(notificationItems[0]);
+
+  expect(consoleSpy).toHaveBeenCalledWith('Notification 1 has been marked as read');
+
+  await waitFor(() => {
+    const updatedItems = screen.queryAllByRole('listitem');
+    expect(updatedItems.length).toBe(initialCount - 1);
+  });
+
+  consoleSpy.mockRestore();
 });

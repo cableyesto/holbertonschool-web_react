@@ -1,61 +1,85 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Header from './Header';
-// eslint-disable-next-line no-unused-vars
 import newContext from '../Context/context';
 
-describe('Header component', () => {
-  test('renders without crashing', () => {
-    render(<Header />);
-    const title = screen.getByText(/school dashboard/i);
-    expect(title).toBeInTheDocument();
-  });
+export const convertHexToRGBA = (hexCode) => {
+  let hex = hexCode.replace('#', '');
 
-  test('should render title', () => {
-    render(<Header />);
-    expect(screen.getByRole('heading')).toHaveTextContent(/School dashboard/i);
-  });
+  if (hex.length === 3) {
+    hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+    console.log({hex})
+  }
 
-  test('should contain a Holberton logo component', () => {
-    render(<Header />);
-    expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument();
-  });
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
 
-  test('should not render logoutSection with default context', () => {
-    render(<Header />);
-    expect(screen.queryByText(/Welcome/i)).not.toBeInTheDocument();
-    expect(document.getElementById('logoutSection')).toBeNull();
-  });
+  return { r, g, b };
+};
 
-  test('should render logoutSection when user isLoggedIn is true', () => {
-    const contextValue = {
-      user: { email: 'test@test.com', password: 'password123', isLoggedIn: true },
-      logOut: () => {},
-    };
+test('should contain a <p/> element with specific text, <h1/>, and an <img/>', () => {
+  render(<Header />);
 
-    render(
-      <newContext.Provider value={contextValue}>
-        <Header />
-      </newContext.Provider>
-    );
+  const headingElement = screen.getByRole('heading', {name: /school Dashboard/i});
+  const imgElement = screen.getByAltText('holberton logo')
 
-    expect(document.getElementById('logoutSection')).toBeInTheDocument();
-    expect(screen.getByText(/test@test.com/i)).toBeInTheDocument();
-  });
+  expect(headingElement).toBeInTheDocument();
+  expect(headingElement).toHaveStyle({color: convertHexToRGBA('#e1003c') })
+  expect(imgElement).toBeInTheDocument();
+});
 
-  test('should call logOut spy when clicking logout link', () => {
-    const logOutSpy = jest.fn();
-    const contextValue = {
-      user: { email: 'test@test.com', password: 'password123', isLoggedIn: true },
-      logOut: logOutSpy,
-    };
+test('logoutSection is not rendered when using default context value', () => {
+  render(<Header />);
 
-    render(
-      <newContext.Provider value={contextValue}>
-        <Header />
-      </newContext.Provider>
-    );
+  const logoutSection = screen.queryByText(/(logout)/i);
 
-    fireEvent.click(screen.getByText(/\(logout\)/i));
-    expect(logOutSpy).toHaveBeenCalled();
-  });
+  expect(logoutSection).not.toBeInTheDocument();
+});
+
+test('logoutSection is rendered when user is logged in', () => {
+  const contextValue = {
+    user: {
+      email: 'test@example.com',
+      password: 'password123',
+      isLoggedIn: true
+    },
+    logOut: jest.fn()
+  };
+
+  render(
+    <newContext.Provider value={contextValue}>
+      <Header />
+    </newContext.Provider>
+  );
+
+  const logoutSection = screen.getByText(/welcome test@example.com/i);
+
+  expect(logoutSection).toBeInTheDocument();
+});
+
+test('clicking logout link calls the logOut function', async () => {
+  const user = userEvent.setup();
+  const mockLogOut = jest.fn();
+
+  const contextValue = {
+    user: {
+      email: 'test@example.com',
+      password: 'password123',
+      isLoggedIn: true
+    },
+    logOut: mockLogOut
+  };
+
+  render(
+    <newContext.Provider value={contextValue}>
+      <Header />
+    </newContext.Provider>
+  );
+
+  const logoutLink = screen.getByText(/(logout)/i);
+
+  await user.click(logoutLink);
+
+  expect(mockLogOut).toHaveBeenCalledTimes(1);
 });

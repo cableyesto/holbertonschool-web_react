@@ -1,43 +1,53 @@
-import React from 'react';
+import { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends React.PureComponent {
-  handleClick = () => {
-    const { id, markAsRead } = this.props;
-    console.log(`Notification ${id} has been marked as read`);
-    if (markAsRead) {
-      markAsRead(id);
+const styles = StyleSheet.create({
+  default: {
+    color: 'blue',
+    '@media (max-width: 900px)': {
+      width: '100%',
+      borderBottom: '1px solid black',
+      fontSize: '20px',
+      padding: '10px 8px',
+      listStyle: 'none'
     }
-  };
+  },
+  urgent: {
+    color: 'red',
+    '@media (max-width: 900px)': {
+      width: '100%',
+      borderBottom: '1px solid black',
+      fontSize: '20px',
+      padding: '10px 8px',
+      listStyle: 'none'
+    }
+  }
+});
 
+export default class NotificationItem extends PureComponent {
   render() {
-    const { type = 'default', html = null, value = null } = this.props;
-    const hasHTML =
-      html && (typeof html === 'object' || typeof html === 'string');
-
-    const colorClass =
-      type === 'default'
-        ? 'text-[var(--default-notification-item)]'
-        : 'text-[var(--urgent-notification-item)]';
-
-    return (
-      <>
+    const { type, html, value, markAsRead, id } = this.props;
+    const itemStyle = type === 'default' ? styles.default : styles.urgent;
+    // this console.log is only for test purposes and not mentionned/required in the student code
+    // console.log(`Rendering NotificationItem with id: ${id}, type: ${type}, value: ${value}`);
+    
+    if (html !== undefined) {
+      return (
         <li
-          onClick={this.handleClick}
+          className={css(itemStyle)}
           data-notification-type={type}
-          className={`tablet:text-base text-base ${colorClass}`}
-          {...(hasHTML
-            ? {
-                dangerouslySetInnerHTML:
-                  typeof html === 'object' ? html : { __html: html },
-              }
-            : {})}
-        >
-          {!hasHTML ? value : null}
-        </li>
-        <span className="block tablet:hidden h-px w-full -ml-1 bg-black mt-2 mb-2"></span>
-      </>
-    );
+          dangerouslySetInnerHTML={html}
+          onClick={() => markAsRead(id)}
+        ></li>
+      );
+    } else {
+      return (
+        <li
+          className={css(itemStyle)}
+          data-notification-type={type}
+          onClick={() => markAsRead(id)}
+        >{value}</li>
+      );
+    }
   }
 }
-
-export default NotificationItem;

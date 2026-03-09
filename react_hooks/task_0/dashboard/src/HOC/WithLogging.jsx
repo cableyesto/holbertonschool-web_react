@@ -1,16 +1,20 @@
-import React from 'react';
+import { Component } from 'react';
 
-function WithLogging(WrappedComponent) {
-  const componentName =
-    WrappedComponent.displayName || WrappedComponent.name || 'Component';
-
-  // eslint-disable-next-line react-hooks/unsupported-syntax
-  class WithLoggingComponent extends React.Component {
+const WithLogging = (WrappedComponent) => {
+  class WithLoggingComponent extends Component {
     componentDidMount() {
+      const componentName = WrappedComponent.name
+        ? WrappedComponent.name
+        : 'Component';
+
       console.log(`Component ${componentName} is mounted`);
     }
 
     componentWillUnmount() {
+      const componentName = WrappedComponent.name
+        ? WrappedComponent.name
+        : 'Component';
+
       console.log(`Component ${componentName} is going to unmount`);
     }
 
@@ -19,8 +23,9 @@ function WithLogging(WrappedComponent) {
     }
   }
 
-  WithLoggingComponent.displayName = `WithLogging(${componentName})`;
+  WithLoggingComponent.displayName = `WithLogging(${WrappedComponent.name || 'Component'})`;
+
   return WithLoggingComponent;
-}
+};
 
 export default WithLogging;

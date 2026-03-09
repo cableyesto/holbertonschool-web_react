@@ -1,81 +1,137 @@
-import React from 'react';
+import { Component } from 'react';
+import { StyleSheet, css } from 'aphrodite';
+import WithLogging from '../HOC/WithLogging';
 
-class Login extends React.Component {
-  static defaultProps = {
-    email: '',
-    password: '',
-    logIn: () => {},
-  };
+const styles = StyleSheet.create({
+  body: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '60vh',
+    padding: '20px 20px 20px 40px',
+    borderTop: '5px red solid'
+  },
+  p: {
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '1.3rem'
+  },
+  form: {
+    margin: '20px 0',
+    fontSize: '1.2rem',
+    fontFamily: 'Roboto, sans-serif',
+    display: 'flex',
+    flexDirection: 'row',
+    '@media (max-width: 900px)': {
+      flexDirection: 'column',
+    }
+  },
+  label: {
+    paddingRight: '10px',
+    '@media (max-width: 900px)': {
+      display: 'block'
+    }
+  },
+  input: {
+    marginRight: '10px',
+    '@media (max-width: 900px)': {
+      display: 'block',
+      marginBottom: '10px',
+      paddingBottom: '5px',
+      paddingTop: '5px',
+      fontSize: '20px',
+      width: '100%',
+      boxSizing: 'border-box'
+    }
+  },
+  button: {
+    cursor: 'pointer',
+    '@media (max-width: 900px)': {
+      display: 'block',
+      marginTop: '10px',
+      paddingBottom: '5px',
+      paddingTop: '5px',
+      fontSize: '16px',
+      width: '100%',
+      boxSizing: 'border-box'
+    }
+  }
+});
 
+class Login extends Component {
   constructor(props) {
     super(props);
+    const { email = '', password = '' } = this.props;
     this.state = {
-      email: this.props.email,
-      password: this.props.password,
-      enableSubmit: false,
+      email,
+      password,
+      enableSubmit: false
     };
+  }
+
+  isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  validateForm = (email, password) => {
+    const isEmailValid = this.isValidEmail(email);
+    const isPasswordValid = password.length >= 8;
+    return isEmailValid && isPasswordValid && email !== '' && password !== '';
+  }
+
+  handleChangeEmail = (e) => {
+    const email = e.target.value;
+    this.setState({
+      email,
+      enableSubmit: this.validateForm(email, this.state.password)
+    });
+  }
+
+  handleChangePassword = (e) => {
+    const password = e.target.value;
+    this.setState({
+      password,
+      enableSubmit: this.validateForm(this.state.email, password)
+    });
   }
 
   handleLoginSubmit = (e) => {
     e.preventDefault();
-    this.props.logIn(this.state.email, this.state.password);
-  };
-
-  handleChangeEmail = (e) => {
-    const newEmail = e.target.value;
-    this.setState({ email: newEmail }, this.handleSubmitEnable);
-  };
-
-  handleChangePassword = (e) => {
-    const newPassword = e.target.value;
-    this.setState({ password: newPassword }, this.handleSubmitEnable);
-  };
-
-  handleSubmitEnable = () => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailValid =
-      this.state.email.length > 0 && regex.test(this.state.email);
-    const passwordValid = this.state.password.length >= 8;
-    if (emailValid && passwordValid) this.setState({ enableSubmit: true });
-    else this.setState({ enableSubmit: false });
-  };
+    const { logIn } = this.props;
+    if (logIn) {
+      logIn(this.state.email, this.state.password);
+    }
+  }
 
   render() {
+    const { email, password, enableSubmit } = this.state;
+
     return (
-      <div className="App-body border-t-2 border-(--main-color) h-full">
-        <p className="mt-5 tablet:ml-10">Login to access the full dashboard</p>
-        <form
-          className="tablet:ml-10 mt-5 flex flex-col justify-between tablet:block"
-          onSubmit={this.handleLoginSubmit}
-        >
-          <label htmlFor="email">Email</label>
+      <div className={css(styles.body)}>
+        <p className={css(styles.p)}>Login to access the full dashboard</p>
+        <form className={css(styles.form)} onSubmit={this.handleLoginSubmit}>
+          <label htmlFor="email" className={css(styles.label)}>Email</label>
           <input
-            className="w-50 tablet:w-57 border border-black tablet:ml-1.5 rounded p-1 tablet:mt-0 mt-1.5"
             type="email"
+            name="user_email"
             id="email"
-            autoComplete="email"
-            value={this.state.email}
+            className={css(styles.input)}
+            value={email}
             onChange={this.handleChangeEmail}
           />
-          <label
-            className="tablet:ml-1.5 tablet:mt-0 mt-1.5"
-            htmlFor="password"
-          >
-            Password
-          </label>
+          <label htmlFor="password" className={css(styles.label)}>Password</label>
           <input
-            className="w-50 tablet:w-57 border border-black tablet:ml-1.5 rounded p-1 tablet:mt-0 mt-1.5"
             type="password"
+            name="user_password"
             id="password"
-            autoComplete="current-password"
-            value={this.state.password}
+            className={css(styles.input)}
+            value={password}
             onChange={this.handleChangePassword}
           />
           <input
             type="submit"
             value="OK"
-            className="tablet:ml-1.5 tablet:mt-0 mt-1.5 w-8 h-8 cursor-pointer border border-black rounded p-1 text-base font-medium text-center disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!this.state.enableSubmit}
+            className={css(styles.button)}
+            disabled={!enableSubmit}
           />
         </form>
       </div>
@@ -83,4 +139,5 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const LoginWithLogging = WithLogging(Login)
+export default LoginWithLogging;
