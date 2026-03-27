@@ -7,6 +7,10 @@ export const getFilteredNotifications = createSelector(
     (notifications, filter) => {
         if (filter === "all") {
             return notifications;
+        } else if(filter === "urgent") {
+            return (notifications.filter(notification => notification.type === "urgent"));
+        } else if(filter === "default") {
+            return (notifications.filter(notification => notification.type === "default"));
         } else {
             return (notifications.filter(notification => notification.type === filter));
         }
